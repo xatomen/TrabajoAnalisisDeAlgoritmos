@@ -153,7 +153,7 @@ void generar_listado_aleatorio(int length, int min){
 //     return 0;
 // }
 
-int cargar_listado_en_arreglo(int array[]) {
+int* cargar_listado_en_arreglo() {
     char name[50];
     printf("Ingrese el nombre del archivo:\n");
     scanf("%49s", name);
@@ -197,7 +197,7 @@ int cargar_listado_en_arreglo(int array[]) {
         printf("indice: %d - dato: %d\n",i,arreglo[i]);
     }
 
-    return 0;
+    return arreglo;
 }
 
 
@@ -206,7 +206,7 @@ int main(){
     printf("hola");
     int opcion_menu=1;
     int opcion_menu_generar=1, opcion_menu_buscar=1, opcion_menu_ordenar=1, length=0, min=0;
-    int array[1000];
+    int* array;
     printf("hola");
     // char name[50];
     while(opcion_menu!=0){
@@ -273,7 +273,10 @@ int main(){
 
             case 2:
                 
-                cargar_listado_en_arreglo(array);
+                array = cargar_listado_en_arreglo(); /*REVISAR ESTO!! Y CAMBIAR NOMBRE TXT LISTADO ALEATORIO*/
+                for(int i=0; i<=sizeof(array); i++){
+                    printf("indice: %d - dato: %d\n",i,array[i]);
+                }
             break;
 
             case 3:
