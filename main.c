@@ -3,40 +3,50 @@
 #include <stdlib.h>
 #include <time.h>
 
-//AÑADIR LIBRERIA TIME
-
 /*Funciones*/
 
-/*generar listado de números de uno en uno ordenados ascendentemente y guardar en archivo*/
+/*Generar listado de números de uno en uno ordenados ascendentemente y guardar en archivo*/
 void generar_listado_asc(int length, int min){
+    /*Declaraciones*/
     FILE *archivo;
     char nombre_archivo[50] = "listado_asc_length_";
     char str[20];
-
+    /*Vamos generando el nombre del archivo*/
     sprintf(str,"%d",length);
     strcat(nombre_archivo,str);
     strcat(nombre_archivo,"_min_");
     sprintf(str,"%d",min);
     strcat(nombre_archivo,str);
     strcat(nombre_archivo,".txt");
-    archivo = fopen(nombre_archivo, "w");
-    char cadena[10];
 
+    /*Creamos el archivo*/
+    archivo = fopen(nombre_archivo, "w");
+    /*Declaramos una "cadena" que poseerá el número generado*/
+    char cadena[50];
+
+    /*Ciclo for para llenar el archivo con números consecutivos de manera ascendente*/
+    /*Se suma "min" para indicar desde que número queremos comenzar*/
     for(int i=0+min; i<=length+min; i++){
+        /*Transformamos el "int" a "char" para poder almacenarlo en el archivo*/
         sprintf(cadena,"%d",i);
+        /*Ingresamos el número en el archivo*/
         fputs(cadena,archivo);
+        /*Pasamos a la siguiente línea*/
         fputs("\n",archivo);
     }
+    /*"Cerramos" el archivo*/
     fclose(archivo);
     printf("Operacion completada\n");
 
 }
 /*generar listado de números de uno en uno ordenados descendentemente y guardar en archivo*/
 void generar_listado_desc(int length, int min){
+    /*Declaraciones*/
     FILE *archivo;
     char nombre_archivo[50] = "listado_desc_length_";
     char str[20];
 
+    /*Vamos generando el nombre del archivo*/
     sprintf(str,"%d",length);
     strcat(nombre_archivo,str);
     strcat(nombre_archivo,"_min_");
@@ -46,11 +56,17 @@ void generar_listado_desc(int length, int min){
     archivo = fopen(nombre_archivo, "w");
     char cadena[10];
 
+    /*Ciclo for para llenar el archivo con números consecutivos de manera descendente*/
+    /*Se suma "min" para indicar desde que número queremos comenzar*/
     for(int i=0; i+min<=length+min; i++){
+        /*Transformamos el "int" a "char" para poder almacenarlo en el archivo*/
         sprintf(cadena,"%d",i);
+        /*Ingresamos el número en el archivo*/
         fputs(cadena,archivo);
+        /*Pasamos a la siguiente línea*/
         fputs("\n",archivo);
     }
+    /*"Cerramos" el archivo*/
     fclose(archivo);
     printf("Operacion completada");
 
@@ -58,13 +74,16 @@ void generar_listado_desc(int length, int min){
 
 /*generar listado de números de uno en uno ordenados descendentemente y guardar en archivo*/
 void generar_listado_aleatorio(int length, int min){
+    /*Declaraciones*/
     FILE *archivo;
     char nombre_archivo[50] = "listado_aleatorio_length_";
     char str[20];
     int value;
 
+    /*La semilla del "random" dependerá del tiempo de nuestro computador*/
     srand(time(NULL));
 
+    /*Vamos generando el nombre del archivo*/
     sprintf(str,"%d",length);
     strcat(nombre_archivo,str);
     strcat(nombre_archivo,"_min_");
@@ -74,61 +93,44 @@ void generar_listado_aleatorio(int length, int min){
     archivo = fopen(nombre_archivo, "w");
     char cadena[10];
 
+    /*Ciclo for para llenar el archivo con números consecutivos de manera "aleatoria"*/
     for(int i=0; i<=length; i++){
         value = rand() % length + min;
         sprintf(cadena,"%d",value);
         fputs(cadena,archivo);
         fputs("\n",archivo);
     }
+    /*"Cerramos" el archivo*/
     fclose(archivo);
     printf("Operacion completada");
 
 }
 
 void cargar_listado_en_arreglo(int *arreglo, char *name) {
-    // char name[50];
-    // printf("Ingrese el nombre del archivo:\n");
-    // scanf("%49s", name);
-
-    /*Obtenemos el largo del array*/
-    // char str[20];
-    // for(int i=0; i<=50; i++){
-    //     if(name[i]=='h'){
-    //         printf("h encontrado\n");
-    //         for(int j=i+2; j<=50; j++){
-    //             printf("iteracion...\n");
-    //             if(name[j]=='_'){
-    //                 break;
-    //             }
-    //             else{
-    //                 str[j-i-2]=name[j];
-    //             }
-    //         }
-    //     }
-    // }
-    // printf("Largo obtenido...\n");
-    // int length = atoi(str);
-
-    /*Declaramos el array con el tamaño correspondiente*/
+    /*Declaraciones*/
     int i=0;
     FILE *archivo;
+    /*Preparamos el archivo para leer*/
     archivo = fopen(name,"r");
+
+    /*"buffer" contendrá el texto de cada línea del archivo*/
     char buffer[100];
     int number;
-    printf("Iniciamos while get...\n");
+    /*Ciclo while para poner ir obteniendo cada "número" de cada línea de texto mientras*/
+    /*se cumpla la condición de que haya una línea de texto para "leer"*/
+    /*Dentro de la condición de este while, obtenemos el "número" y lo guardamos en "buffer"*/
     while(fgets(buffer,100,archivo)){
-        printf("Iteracion...\n");
+        /*Saltamos a la siguiente línea*/
         strtok(buffer,"\n");
+        /*Transformamos el "número" de char a int*/
         number = atoi(buffer);
+        /*Ingresamos el número en el arreglo en la posición correspondiente*/
         arreglo[i]=number;
+        /*Incrementamos i para avanzar a la siguiente posición del arreglo*/
         i++;
     }
-    printf("Terminamos while...\n");
+    /*"Cerramos" el archivo de texto*/
     fclose(archivo);
-
-    // for(int i=0; i<=length; i++){
-    //     printf("for indice: %d - dato: %d\n",i,arreglo[i]);
-    // }
 
 }
 
@@ -153,18 +155,16 @@ int busqueda_binaria(int *arreglo,int i, int n, int k){
 
 /*Función que obtiene el largo del array a partir del nombre del archivo*/
 int get_length(char *name){
-    /*str -> variable que guardará la subcadena*/
+    /*str: variable que guardará la subcadena*/
     char str[20];
     /*Ciclo for para iterar sobre nombre del archivo*/
     for(int i=0; i<=50; i++){
         /*Cuando encontremos las "h" significa que estámos en ...length...*/
         if(name[i]=='h'){
-            // printf("h encontrado\n");
             /*Ejecutamos otro ciclo for para iterar sobre la subcadena restante*/
             /*j es i+2, debido a que i contiene el índice de la letra "h", i+1 posee el caracter "_",*/
             /*por lo tanto, i+2 posee el inicio del número que indica el largo del array*/
             for(int j=i+2; j<=50; j++){
-                // printf("iteracion...\n");
                 /*Cuando encontremos el siguiente "_", salimos del ciclo debido a que ya terminamos*/
                 /*de iterar sobre la subcadena que poseía el número*/
                 if(name[j]=='_'){
@@ -189,6 +189,10 @@ int main(){
     int opcion_menu_generar=1, opcion_menu_buscar=1, opcion_menu_ordenar=1, length=0, min=0;
     char name[50];
     int* array = (int *)malloc((1050001)*sizeof(int));
+
+    //AGREGAR DATALOG QUE GUARDE LOS TIEMPOS DE CADA FUNCION CON EL ARREGLO UTILIZADO!!!!!
+    // FILE *datalog;
+    // datalog = fopen("datalog.txt","w");
 
     while(opcion_menu!=0){
         /*Imprimimos menú principal*/
@@ -258,20 +262,14 @@ int main(){
 
             /*Cargar listado en array*/
             case 2:
-
-                // printf("antes...\n");
                 /*Ingresamos el nombre del archivo*/
                 printf("Ingrese el nombre del archivo:\n");
                 scanf("%49s", name);
                 /*Obtenemos el largo*/
                 length = get_length(name);
                 /*Cargamos el listado en el array*/
-                cargar_listado_en_arreglo(array,name); /*REVISAR ESTO!! Y CAMBIAR NOMBRE TXT LISTADO ALEATORIO*/
-                
-                // printf("despues...\n");
-                // printf("%d",length);
-
-                /*Verificación*/
+                cargar_listado_en_arreglo(array,name);
+                /*Verificación (se puede comentar)*/
                 for(int i=1; i<=length; i++){
                     printf("array indice: %d - dato: %d\n",i,array[i]);
                 }
@@ -308,6 +306,31 @@ int main(){
             break;
 
             case 4:
+                /*Imprimimos el submenú*/
+                printf("Menu ordenar arreglo:\n");
+                printf("1. QuickSort\n");
+                printf("2. MergeSort\n");
+                printf("0. Salir\n");
+                printf("Ingrese una opcion: \n");
+                scanf("%d",&opcion_menu_ordenar);
+                switch(opcion_menu_ordenar){
+                    case 1:
+                        /*Ingresamos el valor a buscar*/
+                        int k;
+                        printf("Ingrese el valor a buscar:\n");
+                        scanf("%d",&k);
+                        /*Invocamos la función, guardando el retorno en la variable "valor"*/
+                        int valor = busqueda_binaria(array,0,length,k);
+                        /*Imprimimos el índice que tiene el elemento en el array*/
+                        printf("Indice: %d\n",valor);
+                    break;
+
+                    case 2:
+
+                    break;
+
+                    case 3:
+                    break;
             break;
 
             case 5:
