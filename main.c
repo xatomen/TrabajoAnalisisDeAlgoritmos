@@ -177,14 +177,18 @@ int cargar_listado_en_arreglo(int array[]) {
     int length = atoi(str);
 
     /*Declaramos el array con el tamaño correspondiente*/
-    int arreglo[length];
+    int arreglo[length+1];
     int i=0;
     FILE *archivo;
     archivo = fopen(name,"r");
     char buffer[100];
+    int* number;
     while(fgets(buffer,100,archivo)){
         strtok(buffer,"\n");
-        arreglo[i]=atoi(buffer);
+        number = atoi(buffer);
+        arreglo[i]=number;
+        // printf("number: %d",number);
+        // printf("buffer: -%s-",buffer);
         i++;
     }
     fclose(archivo);
