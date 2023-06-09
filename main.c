@@ -153,7 +153,54 @@ void generar_listado_aleatorio(int length, int min){
 //     return 0;
 // }
 
-int* cargar_listado_en_arreglo() {
+// int* cargar_listado_en_arreglo() {
+//     char name[50];
+//     printf("Ingrese el nombre del archivo:\n");
+//     scanf("%49s", name);
+
+//     /*Obtenemos el largo del array*/
+//     char str[20];
+//     for(int i=0; i<=50; i++){
+//         if(name[i]=='h'){
+//             printf("h encontrado\n");
+//             for(int j=i+2; j<=50; j++){
+//                 printf("iteracion...\n");
+//                 if(name[j]=='_'){
+//                     break;
+//                 }
+//                 else{
+//                     str[j-i-2]=name[j];
+//                 }
+//             }
+//         }
+//     }
+//     int length = atoi(str);
+
+//     /*Declaramos el array con el tamaño correspondiente*/
+//     int arreglo[length+1];
+//     int i=0;
+//     FILE *archivo;
+//     archivo = fopen(name,"r");
+//     char buffer[100];
+//     int* number;
+//     while(fgets(buffer,100,archivo)){
+//         strtok(buffer,"\n");
+//         number = atoi(buffer);
+//         arreglo[i]=number;
+//         // printf("number: %d",number);
+//         // printf("buffer: -%s-",buffer);
+//         i++;
+//     }
+//     fclose(archivo);
+
+//     for(int i=0; i<=length; i++){
+//         printf("for indice: %d - dato: %d\n",i,arreglo[i]);
+//     }
+
+//     return arreglo;
+// }
+
+void cargar_listado_en_arreglo(int *arreglo) {
     char name[50];
     printf("Ingrese el nombre del archivo:\n");
     scanf("%49s", name);
@@ -177,12 +224,12 @@ int* cargar_listado_en_arreglo() {
     int length = atoi(str);
 
     /*Declaramos el array con el tamaño correspondiente*/
-    int arreglo[length+1];
+    // int arreglo[length+1];
     int i=0;
     FILE *archivo;
     archivo = fopen(name,"r");
     char buffer[100];
-    int* number;
+    int number;
     while(fgets(buffer,100,archivo)){
         strtok(buffer,"\n");
         number = atoi(buffer);
@@ -194,19 +241,17 @@ int* cargar_listado_en_arreglo() {
     fclose(archivo);
 
     for(int i=0; i<=length; i++){
-        printf("indice: %d - dato: %d\n",i,arreglo[i]);
+        printf("for indice: %d - dato: %d\n",i,arreglo[i]);
     }
 
-    return arreglo;
 }
-
 
 /*Programa principal*/
 int main(){
     printf("hola");
     int opcion_menu=1;
     int opcion_menu_generar=1, opcion_menu_buscar=1, opcion_menu_ordenar=1, length=0, min=0;
-    int* array;
+    int* array = (int *)malloc((1001)*sizeof(int));
     printf("hola");
     // char name[50];
     while(opcion_menu!=0){
@@ -215,6 +260,7 @@ int main(){
         printf("2. Cargar listado en array\n");
         printf("3. Buscar en array\n");
         printf("4. Ordenar array\n");
+        printf("5. Vaciar array\n");
         printf("0. Salir\n");
         printf("Ingrese una opcion: \n");
         scanf("%d",&opcion_menu);
@@ -272,10 +318,12 @@ int main(){
             break;
 
             case 2:
-                
-                array = cargar_listado_en_arreglo(); /*REVISAR ESTO!! Y CAMBIAR NOMBRE TXT LISTADO ALEATORIO*/
-                for(int i=0; i<=sizeof(array); i++){
-                    printf("indice: %d - dato: %d\n",i,array[i]);
+                printf("antes...\n");
+                cargar_listado_en_arreglo(array); /*REVISAR ESTO!! Y CAMBIAR NOMBRE TXT LISTADO ALEATORIO*/
+                printf("despues...\n");
+                // printf("%d",&array[1]);
+                for(int i=1; i<=1001; i++){
+                    printf("array indice: %d - dato: %d\n",i,array[i]);
                 }
             break;
 
@@ -283,6 +331,10 @@ int main(){
             break;
 
             case 4:
+            break;
+
+            case 5:
+                free(array);
             break;
         }
     }
