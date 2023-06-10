@@ -19,7 +19,9 @@ int jump_search(int *array, int n, int x);
 void swap(int *arreglo, int i, int j);
 int particion(int *arreglo, int l, int h);
 void quicksort(int *arreglo, int l, int h);
-void guardar_arreglo(int *arreglo, char *name, char *name_sort, int length);
+void merge(int *arreglo, int l, int m, int r);
+void mergesort(int *arreglo, int l, int r);
+void guardar_arreglo(int *arreglo, char *name_sort, int length);
 
 /*Programa principal*/
 int main(){
@@ -175,7 +177,7 @@ int main(){
                         printf("Operacion completada en %.20lf segundos...\n",segundos);
 
                         /*Guardamos el arreglo en un archivo de texto*/
-                        guardar_arreglo(array,name,"quicksort",length);
+                        guardar_arreglo(array,"quicksort.txt",length);
                         /*Traza*/
                         // for(int i=1; i<=length+1; i++){
                         //     printf("indice: %d - valor: %d\n",i,array[i]);
@@ -185,7 +187,22 @@ int main(){
                     break;
 
                     case 2:
+                        /*Invocamos la función y calculamos el tiempo de ejecución*/
+                        tiempo_inicio = clock();
+                        mergesort(array,1,length);
+                        tiempo_final = clock();
+                        segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
 
+                        printf("Operacion completada en %.20lf segundos...\n",segundos);
+
+                        /*Guardamos el arreglo en un archivo de texto*/
+                        guardar_arreglo(array,"mergesort.txt",length);
+                        /*Traza*/
+                        // for(int i=1; i<=length+1; i++){
+                        //     printf("indice: %d - valor: %d\n",i,array[i]);
+                        //     system("pause");
+                        // }
+                        // printf("Operacion completada...\n");
                     break;
 
                     case 3:
@@ -436,33 +453,79 @@ void quicksort(int *arreglo, int l, int h){
     }
 }
 
-void guardar_arreglo(int *arreglo, char *name, char *name_sort, int length){
+void merge(int *arreglo, int l, int m, int r){
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+ 
+    // Create temp arrays
+    // int L[n1], R[n2];
+    /*Utilizamos arreglos dinámicos para evitar que el programa finalice por problemas*/
+    int *L = (int *)malloc(n1 * sizeof(int));
+    int *R = (int *)malloc(n2 * sizeof(int));
+ 
+    // Copy data to temp arrays L[] and R[]
+    for (i = 0; i < n1; i++)
+        L[i] = arreglo[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arreglo[m + 1 + j];
+ 
+    // Merge the temp arrays back into arr[l..r
+    i = 0;
+    j = 0;
+    k = l;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arreglo[k] = L[i];
+            i++;
+        }
+        else {
+            arreglo[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+ 
+    // Copy the remaining elements of L[],
+    // if there are any
+    while (i < n1) {
+        arreglo[k] = L[i];
+        i++;
+        k++;
+    }
+ 
+    // Copy the remaining elements of R[],
+    // if there are any
+    while (j < n2) {
+        arreglo[k] = R[j];
+        j++;
+        k++;
+    }
 
-    // char new_file[] ;
-    // char name_without_txt[100];
+    free(L);
+    free(R);
+}
+ 
+// l is for left index and r is right index of the
+// sub-array of arr to be sorted
+void mergesort(int *arreglo, int l, int r){
+    // printf("mergesort...\n");
+    if (l < r) {
+        int m = l + (r - l) / 2;
+ 
+        // Sort first and second halves
+        mergesort(arreglo, l, m);
+        mergesort(arreglo, m + 1, r);
+ 
+        merge(arreglo, l, m, r);
+    }
+}
 
-    // strcat(name_without_txt,name);
-    // printf("name: %s\n",name_without_txt);
-    // int i=0;
-    // while(name[i]!='.'){
-    //     new_file[100] = name[i];
-    //     i++;
-    // }
-    // strcat(new_file,name_without_txt);
-    // strcat(new_file,"_");
+void guardar_arreglo(int *arreglo, char *name_sort,int length){
     char number[100];
-    // strcat(new_file,name_sort);
-    // strcat(new_file,".txt");
-
-    // strcat(new_file,name_sort);
-    // strcat(new_file,".txt");
-
-    // new_file = "quicksort.txt";
-
-    // printf("Nombre: %s",new_file);
 
     FILE *archivo;
-    archivo = fopen("quicksort.txt","w");
+    archivo = fopen(name_sort,"w");
 
     for(int i=1; i<=length; i++){
         sprintf(number,"%d",arreglo[i]);
