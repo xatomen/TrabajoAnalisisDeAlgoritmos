@@ -33,6 +33,10 @@ int main(){
 
     //ARREGLAR LOS ARCHIVOS PORQUE SON 1001 DATOS!!!!!!!!!!!!!!
 
+    //AGREGAR DATALOG QUE GUARDE LOS TIEMPOS DE CADA FUNCION CON EL ARREGLO UTILIZADO!!!!!
+    // FILE *datalog;
+    // datalog = fopen("datalog.txt","w");
+
     while(opcion_menu!=0){
         /*Imprimimos menú principal*/
         printf("Menu:\n");
@@ -101,8 +105,6 @@ int main(){
 
             /*Cargar listado en array*/
             case 2:
-
-                // printf("antes...\n");
                 /*Ingresamos el nombre del archivo*/
                 printf("Ingrese el nombre del archivo:\n");
                 scanf("%49s", name);
