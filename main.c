@@ -37,6 +37,7 @@ void merge(int *arreglo, int l, int m, int r);
 void mergesort(int *arreglo, int l, int r);
 
 void guardar_arreglo(int *arreglo, char *name_sort, int length);
+void ingresar_tiempo_datalog(char *operacion, double tiempo, int anio, int mes, int dia, int *name);
 
 /*Programa principal*/
 int main(){
@@ -45,12 +46,17 @@ int main(){
     char name[50];
     int* array = (int *)malloc((30000000)*sizeof(int));
     int valor;
+    
+    /*Para calcular tiempo e ingresar en datalog*/
     clock_t tiempo_inicio, tiempo_final;
     double segundos;
 
-    //AGREGAR DATALOG QUE GUARDE LOS TIEMPOS DE CADA FUNCION CON EL ARREGLO UTILIZADO!!!!!
-    // FILE *datalog;
-    // datalog = fopen("datalog.txt","w");
+    time_t tiempoActual = time(NULL);
+    struct tm *fechaHora = localtime(&tiempoActual);
+
+    int anio = fechaHora->tm_year + 1900;
+    int mes = fechaHora->tm_mon + 1;
+    int dia = fechaHora->tm_mday;
 
     while(opcion_menu!=0){
         /*Imprimimos menú principal*/
@@ -127,10 +133,6 @@ int main(){
                 length = get_length(name);
                 /*Cargamos el listado en el array*/
                 cargar_listado_en_arreglo(array,name);
-                /*Verificación (se puede comentar)*/
-                // for(int i=1; i<=length; i++){
-                //     printf("array indice: %d - dato: %d\n",i,array[i]);
-                // }
                 printf("Operacion completada...\n");
             break;
 
@@ -186,17 +188,11 @@ int main(){
                         quicksort(array,1,length);
                         tiempo_final = clock();
                         segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
-
+                        ingresar_tiempo_datalog("quicksort",segundos,anio,mes,dia,name);
                         printf("Operacion completada en %.20lf segundos...\n",segundos);
-
                         /*Guardamos el arreglo en un archivo de texto*/
                         guardar_arreglo(array,"quicksort.txt",length);
-                        /*Traza*/
-                        // for(int i=1; i<=length+1; i++){
-                        //     printf("indice: %d - valor: %d\n",i,array[i]);
-                        //     system("pause");
-                        // }
-                        // printf("Operacion completada...\n");
+                        printf("Operacion completada...\n");
                     break;
 
                     case 2:
@@ -205,17 +201,10 @@ int main(){
                         mergesort(array,1,length);
                         tiempo_final = clock();
                         segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
-
-                        printf("Operacion completada en %.20lf segundos...\n",segundos);
-
+                        ingresar_tiempo_datalog("mergesort",segundos,anio,mes,dia,name);
                         /*Guardamos el arreglo en un archivo de texto*/
                         guardar_arreglo(array,"mergesort.txt",length);
-                        /*Traza*/
-                        // for(int i=1; i<=length+1; i++){
-                        //     printf("indice: %d - valor: %d\n",i,array[i]);
-                        //     system("pause");
-                        // }
-                        // printf("Operacion completada...\n");
+                        printf("Operacion completada...\n");
                     break;
 
                     case 3:
@@ -521,7 +510,6 @@ void merge(int *arreglo, int l, int m, int r){
 // l is for left index and r is right index of the
 // sub-array of arr to be sorted
 void mergesort(int *arreglo, int l, int r){
-    // printf("mergesort...\n");
     if (l < r) {
         int m = l + (r - l) / 2;
  
@@ -544,5 +532,12 @@ void guardar_arreglo(int *arreglo, char *name_sort,int length){
         fputs(number,archivo);
         fputs("\n",archivo);
     }
+    fclose(archivo);
+}
+
+void ingresar_tiempo_datalog(char *operacion, double tiempo, int anio, int mes, int dia, int *name){
+    FILE *archivo;
+    archivo = fopen("datalog.txt","a");
+    fprintf(archivo,"operacion: %s fecha: %02d-%02d-%d tiempo:%0.20lf nombre archivo: %s\n",operacion,dia,mes,anio,tiempo,name);
     fclose(archivo);
 }
