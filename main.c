@@ -1,5 +1,14 @@
+/*------------------------------------------------------
+                    Trabajo grupal 1
 
-
+    Integrantes:    -Luis Caro
+                    -Jorge Gallardo
+                    -Fernando Maldonado
+                    -Felipe Vera
+    Asignatura: Análisis de Algoritmos (INFB8071)
+    Sección:    412
+    Profesor:   Sergio Muñoz
+------------------------------------------------------*/
 
 /*Librerias a utilizar*/
 #include <stdio.h>
@@ -13,14 +22,20 @@ void generar_listado_asc(int length, int min);
 void generar_listado_desc(int length, int min);
 void generar_listado_aleatorio(int length, int min);
 void cargar_listado_en_arreglo(int *arreglo, char *name);
+
 int get_length(char *name);
+
 int busqueda_binaria(int *arreglo,int i, int n, int k);
+
 int jump_search(int *array, int n, int x);
+
 void swap(int *arreglo, int i, int j);
 int particion(int *arreglo, int l, int h);
 void quicksort(int *arreglo, int l, int h);
+
 void merge(int *arreglo, int l, int m, int r);
 void mergesort(int *arreglo, int l, int r);
+
 void guardar_arreglo(int *arreglo, char *name_sort, int length);
 
 /*Programa principal*/
@@ -32,8 +47,6 @@ int main(){
     int valor;
     clock_t tiempo_inicio, tiempo_final;
     double segundos;
-
-    //ARREGLAR LOS ARCHIVOS PORQUE SON 1001 DATOS!!!!!!!!!!!!!!
 
     //AGREGAR DATALOG QUE GUARDE LOS TIEMPOS DE CADA FUNCION CON EL ARREGLO UTILIZADO!!!!!
     // FILE *datalog;
@@ -459,7 +472,6 @@ void merge(int *arreglo, int l, int m, int r){
     int n2 = r - m;
  
     // Create temp arrays
-    // int L[n1], R[n2];
     /*Utilizamos arreglos dinámicos para evitar que el programa finalice por problemas*/
     int *L = (int *)malloc(n1 * sizeof(int));
     int *R = (int *)malloc(n2 * sizeof(int));
