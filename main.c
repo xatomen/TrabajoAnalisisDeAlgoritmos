@@ -129,12 +129,16 @@ int main(){
             /*Cargar listado en array*/
             case 2:
                 /*Ingresamos el nombre del archivo*/
-                printf("Ingrese el nombre del archivo:\n");
-                scanf("%49s", name);
+                // printf("Ingrese el nombre del archivo:\n");
+                // scanf("%49s", name);
                 /*Obtenemos el largo*/
-                length = get_length(name);
+                // length = get_length(name);
                 /*Cargamos el listado en el array*/
-                cargar_listado_en_arreglo(array,name);
+                // cargar_listado_en_arreglo(array,name);
+                cargar_listado_csv(array);
+                for(int i=0; i<500;i++){
+                    printf("%d\ns",array[i]);
+                }
                 printf("Operacion completada...\n");
             break;
 
@@ -554,20 +558,49 @@ void cargar_listado_csv(int *arreglo){
     int flag=0;
     int j;
     int number;
-
+    int row = 0;
+    fgets(buffer,500,archivo);
+    strtok(buffer,"\n");
     while(fgets(buffer,500,archivo)){
+        // strtok(buffer,"\n");
         for(int i=0; i<500; i++){
             if(buffer[i]==';'){
                 flag++;
+                // printf("; encontrado...");
             }
             if(flag==4){
                 j=0;
                 while(buffer[j+i]!=';'){
                     char_number[j]=buffer[j+i];
+                    // printf("char_number: %s",char_number);
+                    // system("pause");
+                    j++;
                 }
-                flag++;
+                // flag++;
             }
+            // if(flag==5){
+                // break;
+            // }
         }
-        /*ALGO MAS.......*/
+        // printf("%s",buffer);
+        printf("%s-",char_number);
+        number = atoi(char_number);
+        arreglo[row] = number;
+        row++;
+        flag=0;
+        memset(char_number,0,5);
+        if(row==500){
+            break;
+        }
+        strtok(buffer,"\n");
     }
+    system("pause");
 }
+
+// strtok(buffer,"\n");
+//         /*Transformamos el "número" de char a int*/
+//         number = atoi(buffer);
+//         /*Ingresamos el número en el arreglo en la posición correspondiente*/
+//         arreglo[i]=number;
+//         /*Incrementamos i para avanzar a la siguiente posición del arreglo*/
+//         i++;
