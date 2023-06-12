@@ -17,9 +17,6 @@
 #include <time.h>
 #include <math.h>
 
-void quickSort(int left, int right, int *numbers);
-void swap(int i, int j, int *arreglo);
-
 /*Prototipo de funciones*/
 void generar_listado_asc(int length, int min);
 void generar_listado_desc(int length, int min);
@@ -34,9 +31,9 @@ int busqueda_binaria(int *arreglo,int i, int n, int k);
 
 int jump_search(int *array, int n, int x);
 
-// void swap(int *arreglo, int i, int j);
-int particion(int *arreglo, int l, int h);
-void quicksort(int *arreglo, int l, int h);
+int partition(int left, int right, int pivot, int *numbers);
+void quickSort(int left, int right, int *numbers);
+void swap(int i, int j, int *arreglo);
 
 void merge(int *arreglo, int l, int m, int r);
 void mergesort(int *arreglo, int l, int r);
@@ -49,7 +46,7 @@ int main(){
     int opcion_menu=1;
     int opcion_menu_generar=1, opcion_menu_buscar=1, opcion_menu_ordenar=1, length=0, min=0;
     char name[50];
-    int* array = (int *)malloc((30000000)*sizeof(int));
+    int* array = (int *)malloc((15000000)*sizeof(int));
     int valor;
     
     /*Para calcular tiempo e ingresar en datalog*/
@@ -138,12 +135,11 @@ int main(){
                 // scanf("%49s", name);
                 /*Obtenemos el largo*/
                 // length = get_length(name);
+                printf("Ingrese el tamaño del arreglo:\n");
+                scanf("%d",length);
                 /*Cargamos el listado en el array*/
                 // cargar_listado_en_arreglo(array,name);
                 cargar_listado_csv(array);
-                // for(int i=0; i<500;i++){
-                //     printf("%d\n",array[i]);
-                // }
                 printf("Operacion completada...\n");
             break;
 
@@ -197,12 +193,13 @@ int main(){
                         /*Invocamos la función y calculamos el tiempo de ejecución*/
                         tiempo_inicio = clock();
                         // quicksort(array,1,length);
-                        quickSort(0,length,array);
+                        quickSort(0,length,array); //REVISAR SI ES 0 O ES 1
                         tiempo_final = clock();
                         segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
                         ingresar_tiempo_datalog("quicksort",segundos,anio,mes,dia,name);
                         printf("Operacion completada en %.20lf segundos...\n",segundos);
                         /*Guardamos el arreglo en un archivo de texto*/
+                        printf("Guardando arreglo en archivo de texto...");
                         guardar_arreglo(array,"quicksort.txt",length);
                         printf("Operacion completada...\n");
                     break;
@@ -214,8 +211,10 @@ int main(){
                         tiempo_final = clock();
                         segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
                         ingresar_tiempo_datalog("mergesort",segundos,anio,mes,dia,name);
+                        printf("Operacion completada en %.20lf segundos...\n",segundos);
                         /*Guardamos el arreglo en un archivo de texto*/
                         // guardar_arreglo(array,"mergesort.txt",8926307);
+                        printf("Guardando arreglo en archivo de texto...");
                         guardar_arreglo(array,"mergesort.txt",length);
                         printf("Operacion completada...\n");
                     break;
@@ -440,7 +439,6 @@ int jump_search(int *array, int n, int x){
     }
 }
 
-// void swap(int *arreglo, int i, int j){
 void swap(int i, int j, int *arreglo){
     int aux;
     aux = arreglo[i];
@@ -448,27 +446,43 @@ void swap(int i, int j, int *arreglo){
     arreglo[j] = aux;
 }
 
-int particion(int *arreglo, int l, int h){
-    int i, pivote;
-    pivote = arreglo[h];
-    i = l-1;
-    for(int j=l;j<=h-1; j++){
-        if(arreglo[j]<=pivote){
-            i++;
-            swap(arreglo,i,j);
-        }
-    }
-    swap(arreglo,i+1,h);
-    return i+1;
+int partition(int left, int right, int pivot, int *numbers) {
+   int leftPointer = left -1;
+   int rightPointer = right;
+
+   while (1) {
+      while (numbers[++leftPointer] < pivot) {
+         //do nothing
+      }
+
+      while (rightPointer > 0 && numbers[--rightPointer] > pivot) {
+         //do nothing
+      }
+
+      if (leftPointer >= rightPointer) {
+         break;
+      } else {
+         // printf(" item swapped :%d,%d\n", numbers[leftPointer],numbers[rightPointer]);
+         swap(leftPointer,rightPointer, numbers);
+      }
+   }
+
+   // printf(" pivot swapped :%d,%d\n", numbers[leftPointer],numbers[right]);
+   swap(leftPointer, right, numbers);
+   // printf("Updated Array: ");
+   // display();
+   return leftPointer;
 }
 
-void quicksort(int *arreglo, int l, int h){
-    int pi;
-    if(l<h){
-        pi = particion(arreglo,l,h);
-        quicksort(arreglo,l,pi-1);
-        quicksort(arreglo,pi+1,h);
-    }
+void quickSort(int left, int right, int *numbers) {
+   if(right - left <= 0) {
+      return;
+   } else {
+      int pivot = numbers[right];
+      int partitionPoint = partition(left, right, pivot, numbers);
+      quickSort(left, partitionPoint-1, numbers);
+      quickSort(partitionPoint+1, right, numbers);
+   }
 }
 
 void merge(int *arreglo, int l, int m, int r){
@@ -599,46 +613,5 @@ void cargar_listado_csv(int *arreglo){
         memset(char_number,0,5);
         strtok(buffer,"\n");
     }
-    system("pause");
-}
-
-
-/*QUICKSORT 2 INTERNET*/
-int partition(int left, int right, int pivot, int *numbers) {
-   int leftPointer = left -1;
-   int rightPointer = right;
-
-   while (1) {
-      while (numbers[++leftPointer] < pivot) {
-         //do nothing
-      }
-
-      while (rightPointer > 0 && numbers[--rightPointer] > pivot) {
-         //do nothing
-      }
-
-      if (leftPointer >= rightPointer) {
-         break;
-      } else {
-         // printf(" item swapped :%d,%d\n", numbers[leftPointer],numbers[rightPointer]);
-         swap(leftPointer,rightPointer, numbers);
-      }
-   }
-
-   // printf(" pivot swapped :%d,%d\n", numbers[leftPointer],numbers[right]);
-   swap(leftPointer, right, numbers);
-   // printf("Updated Array: ");
-   // display();
-   return leftPointer;
-}
-
-void quickSort(int left, int right, int *numbers) {
-   if(right - left <= 0) {
-      return;
-   } else {
-      int pivot = numbers[right];
-      int partitionPoint = partition(left, right, pivot, numbers);
-      quickSort(left, partitionPoint-1, numbers);
-      quickSort(partitionPoint+1, right, numbers);
-   }
+    printf("Listado cargado en arreglo satisfactoriamente...");
 }
