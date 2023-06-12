@@ -23,6 +23,8 @@ void generar_listado_desc(int length, int min);
 void generar_listado_aleatorio(int length, int min);
 void cargar_listado_en_arreglo(int *arreglo, char *name);
 
+void cargar_listado_csv(int *arreglo);
+
 int get_length(char *name);
 
 int busqueda_binaria(int *arreglo,int i, int n, int k);
@@ -540,4 +542,32 @@ void ingresar_tiempo_datalog(char *operacion, double tiempo, int anio, int mes, 
     archivo = fopen("datalog.txt","a");
     fprintf(archivo,"operacion: %s fecha: %02d-%02d-%d tiempo:%0.20lf nombre archivo: %s\n",operacion,dia,mes,anio,tiempo,name);
     fclose(archivo);
+}
+
+/*TERMINAR FUNCION!!!!!!!!*/
+void cargar_listado_csv(int *arreglo){
+    FILE* archivo;
+    archivo = fopen("AtencionesUrgencia2022.csv","r");
+    
+    char buffer[500];
+    char char_number[5];
+    int flag=0;
+    int j;
+    int number;
+
+    while(fgets(buffer,500,archivo)){
+        for(int i=0; i<500; i++){
+            if(buffer[i]==';'){
+                flag++;
+            }
+            if(flag==4){
+                j=0;
+                while(buffer[j+i]!=';'){
+                    char_number[j]=buffer[j+i];
+                }
+                flag++;
+            }
+        }
+        /*ALGO MAS.......*/
+    }
 }
