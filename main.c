@@ -17,6 +17,9 @@
 #include <time.h>
 #include <math.h>
 
+void quickSort(int left, int right, int *numbers);
+void swap(int i, int j, int *arreglo);
+
 /*Prototipo de funciones*/
 void generar_listado_asc(int length, int min);
 void generar_listado_desc(int length, int min);
@@ -31,7 +34,7 @@ int busqueda_binaria(int *arreglo,int i, int n, int k);
 
 int jump_search(int *array, int n, int x);
 
-void swap(int *arreglo, int i, int j);
+// void swap(int *arreglo, int i, int j);
 int particion(int *arreglo, int l, int h);
 void quicksort(int *arreglo, int l, int h);
 
@@ -59,6 +62,8 @@ int main(){
     int anio = fechaHora->tm_year + 1900;
     int mes = fechaHora->tm_mon + 1;
     int dia = fechaHora->tm_mday;
+
+    length=30000;
 
     while(opcion_menu!=0){
         /*Imprimimos menú principal*/
@@ -136,9 +141,9 @@ int main(){
                 /*Cargamos el listado en el array*/
                 // cargar_listado_en_arreglo(array,name);
                 cargar_listado_csv(array);
-                for(int i=0; i<500;i++){
-                    printf("%d\ns",array[i]);
-                }
+                // for(int i=0; i<500;i++){
+                //     printf("%d\n",array[i]);
+                // }
                 printf("Operacion completada...\n");
             break;
 
@@ -191,7 +196,8 @@ int main(){
                     case 1:
                         /*Invocamos la función y calculamos el tiempo de ejecución*/
                         tiempo_inicio = clock();
-                        quicksort(array,1,length);
+                        // quicksort(array,1,length);
+                        quickSort(0,length,array);
                         tiempo_final = clock();
                         segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
                         ingresar_tiempo_datalog("quicksort",segundos,anio,mes,dia,name);
@@ -209,6 +215,7 @@ int main(){
                         segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
                         ingresar_tiempo_datalog("mergesort",segundos,anio,mes,dia,name);
                         /*Guardamos el arreglo en un archivo de texto*/
+                        // guardar_arreglo(array,"mergesort.txt",8926307);
                         guardar_arreglo(array,"mergesort.txt",length);
                         printf("Operacion completada...\n");
                     break;
@@ -225,6 +232,8 @@ int main(){
     }
     return 0;
 }
+
+
 
 
 
@@ -431,7 +440,8 @@ int jump_search(int *array, int n, int x){
     }
 }
 
-void swap(int *arreglo, int i, int j){
+// void swap(int *arreglo, int i, int j){
+void swap(int i, int j, int *arreglo){
     int aux;
     aux = arreglo[i];
     arreglo[i] = arreglo[j];
@@ -556,51 +566,79 @@ void cargar_listado_csv(int *arreglo){
     char buffer[500];
     char char_number[5];
     int flag=0;
-    int j;
+    // int j;
     int number;
     int row = 0;
     fgets(buffer,500,archivo);
     strtok(buffer,"\n");
     while(fgets(buffer,500,archivo)){
-        // strtok(buffer,"\n");
         for(int i=0; i<500; i++){
             if(buffer[i]==';'){
                 flag++;
-                // printf("; encontrado...");
             }
             if(flag==4){
-                j=0;
-                while(buffer[j+i]!=';'){
-                    char_number[j]=buffer[j+i];
-                    // printf("char_number: %s",char_number);
-                    // system("pause");
-                    j++;
+                //BUSCAR NUM
+                for(int j=0; j<=500;j++){
+                    if(buffer[i+j+1]==';'){
+                        flag++;
+                        break;
+                    }
+                    else{
+                        char_number[j]=buffer[i+j+1];
+                    }
                 }
-                // flag++;
             }
-            // if(flag==5){
-                // break;
-            // }
+            if(flag==5){
+                break;
+            }
         }
-        // printf("%s",buffer);
-        printf("%s-",char_number);
         number = atoi(char_number);
-        arreglo[row] = number;
-        row++;
+        arreglo[row]=number;
         flag=0;
+        row++;
         memset(char_number,0,5);
-        if(row==500){
-            break;
-        }
         strtok(buffer,"\n");
     }
     system("pause");
 }
 
-// strtok(buffer,"\n");
-//         /*Transformamos el "número" de char a int*/
-//         number = atoi(buffer);
-//         /*Ingresamos el número en el arreglo en la posición correspondiente*/
-//         arreglo[i]=number;
-//         /*Incrementamos i para avanzar a la siguiente posición del arreglo*/
-//         i++;
+
+/*QUICKSORT 2 INTERNET*/
+int partition(int left, int right, int pivot, int *numbers) {
+   int leftPointer = left -1;
+   int rightPointer = right;
+
+   while (1) {
+      while (numbers[++leftPointer] < pivot) {
+         //do nothing
+      }
+
+      while (rightPointer > 0 && numbers[--rightPointer] > pivot) {
+         //do nothing
+      }
+
+      if (leftPointer >= rightPointer) {
+         break;
+      } else {
+         // printf(" item swapped :%d,%d\n", numbers[leftPointer],numbers[rightPointer]);
+         swap(leftPointer,rightPointer, numbers);
+      }
+   }
+
+   // printf(" pivot swapped :%d,%d\n", numbers[leftPointer],numbers[right]);
+   swap(leftPointer, right, numbers);
+   // printf("Updated Array: ");
+   // display();
+   return leftPointer;
+}
+
+void quickSort(int left, int right, int *numbers) {
+   if(right - left <= 0) {
+      return;
+   } else {
+      int pivot = numbers[right];
+      int partitionPoint = partition(left, right, pivot, numbers);
+      quickSort(left, partitionPoint-1, numbers);
+      quickSort(partitionPoint+1, right, numbers);
+   }
+}
