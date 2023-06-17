@@ -17,6 +17,13 @@
 #include <time.h>
 #include <math.h>
 
+#include <unistd.h>
+#include <Windows.h>
+
+#include <sys/time.h>
+
+
+
 /*Prototipo de funciones*/
 void generar_listado_asc(int length, int min);
 void generar_listado_desc(int length, int min);
@@ -30,6 +37,7 @@ int get_length(char *name);
 int busqueda_binaria(int *arreglo,int i, int n, int k);
 
 int jump_search(int *array, int n, int x);
+int minimum(int a, int b);
 
 int partition(int left, int right, int pivot, int *numbers);
 void quickSort(int left, int right, int *numbers);
@@ -41,12 +49,19 @@ void mergesort(int *arreglo, int l, int r);
 void guardar_arreglo(int *arreglo, char *name_sort, int length);
 void ingresar_tiempo_datalog(char *operacion, double tiempo, int anio, int mes, int dia, char *name, int length);
 
+void ingresar_tiempo_datalog_busqueda(char *operacion, double tiempo, int anio, int mes, int dia, int length, int indice, int numero){
+    FILE *archivo;
+    archivo = fopen("datalog.txt","a");
+    fprintf(archivo,"operacion: %s fecha: %02d-%02d-%d tiempo:%0.30lf length: %d indice: %d numero: %d\n",operacion,dia,mes,anio,tiempo,length,indice,numero);
+    fclose(archivo);
+}
+
 /*Programa principal*/
 int main(){
     int opcion_menu=1;
     int opcion_menu_generar=1, opcion_menu_buscar=1, opcion_menu_ordenar=1, length=0, min=0;
     char name[50];
-    int* array = (int *)malloc((15000000)*sizeof(int));
+    int* array = (int *)malloc((32000001)*sizeof(int));
     int valor;
     
     /*Para calcular tiempo e ingresar en datalog*/
@@ -59,6 +74,9 @@ int main(){
     int anio = fechaHora->tm_year + 1900;
     int mes = fechaHora->tm_mon + 1;
     int dia = fechaHora->tm_mday;
+
+    struct timespec t_inicio, t_final;
+    double secs;
 
     length=30000;
 
@@ -156,19 +174,22 @@ int main(){
                 switch(opcion_menu_buscar){
                     case 1:
                         /*Ingresamos el valor a buscar*/
-                        length=8250000;
+                        // length=8250000;
+                        length=30000000;
                         /*Cargamos el listado en el array*/
-                        cargar_listado_en_arreglo(array,"ordenado.txt");
-                        int k = 199;
-                        for(length=30000; length<=8250000; length+=30000){
-                             /*Invocamos la función, guardando el retorno en la variable "valor"*/
-                            tiempo_inicio = clock();
-                            valor = busqueda_binaria(array,0,length,k);
-                            tiempo_final = clock();
-                            segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
-                            ingresar_tiempo_datalog("binaria",segundos,anio,mes,dia,name,length);
+                        // cargar_listado_en_arreglo(array,"ordenado.txt");
+                        cargar_listado_en_arreglo(array,"listado_asc_length_32000000_min_0.txt");
+                        int k = 20000000;
+                        for(length=30000; length<=30000000; length+=30000){
+                            clock_gettime(CLOCK_MONOTONIC, &t_inicio);
+                            valor = busqueda_binaria(array, 0, length, k);
+                            clock_gettime(CLOCK_MONOTONIC, &t_final);
+                            secs = (double)(t_final.tv_sec - t_inicio.tv_sec) + (double)(t_final.tv_nsec - t_inicio.tv_nsec) / 1000000000.0;
+                            ingresar_tiempo_datalog_busqueda("binaria",secs,anio,mes,dia,length,valor,k);
                             /*Imprimimos el índice que tiene el elemento en el array*/
-                            printf("Indice: %d\n",valor);
+                            printf("Indice: %d segundos: %.50f\n",valor,secs);
+                            // sleep(10);
+                            valor = 0;
                         }
                         // printf("Ingrese el valor a buscar:\n");
                         // scanf("%d",&k);
@@ -181,20 +202,21 @@ int main(){
 
                     case 2:
                         /*Ingresamos el valor a buscar*/
-                        length=8250000;
+                        length=30000000;
                         /*Cargamos el listado en el array*/
                         cargar_listado_en_arreglo(array,"ordenado.txt");
-                        int x = 199;
-                        for(length=30000; length<=8250000; length+=30000){
-                             /*Invocamos la función, guardando el retorno en la variable "valor"*/
+                        int x = 20000000;
+                        for(length=30000; length<=30000000; length+=30000){
+                        //      /*Invocamos la función, guardando el retorno en la variable "valor"*/
                             printf("length: %d",length);
-                            tiempo_inicio = clock();
+                            clock_gettime(CLOCK_MONOTONIC, &t_inicio);
                             valor = jump_search(array,length,x);
-                            tiempo_final = clock();
-                            segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
-                            ingresar_tiempo_datalog("jumpsearch",segundos,anio,mes,dia,name,length);
-                            /*Imprimimos el índice que tiene el elemento en el array*/
-                            printf("Indice: %d\n",valor);
+                            clock_gettime(CLOCK_MONOTONIC, &t_final);
+                            secs = (double)(t_final.tv_sec - t_inicio.tv_sec) + (double)(t_final.tv_nsec - t_inicio.tv_nsec) / 1000000000.0;
+                            ingresar_tiempo_datalog_busqueda("jumpsearch",secs,anio,mes,dia,length,valor,x);
+                            // ingresar_tiempo_datalog("jumpsearch",segundos,anio,mes,dia,name,length);
+                            // /*Imprimimos el índice que tiene el elemento en el array*/
+                            printf("Indice: %d tiempo: %.50f\n",valor,secs);
                         }
                         // /*Ingresamos el valor a buscar*/
                         // int x;
@@ -421,7 +443,7 @@ void cargar_listado_en_arreglo(int *arreglo, char *name) {
     int i=1;
     FILE *archivo;
     /*Preparamos el archivo para leer*/
-    archivo = fopen("ordenado.txt","r");
+    archivo = fopen("listado_asc_length_32000000_min_0.txt","r");
 
     /*"buffer" contendrá el texto de cada línea del archivo*/
     char buffer[100];
@@ -493,27 +515,66 @@ int busqueda_binaria(int *arreglo,int i, int n, int k){
     return -1;
 }
 
-int jump_search(int *array, int n, int x){
-    int i=1, ini, fin;
-    fin = sqrt(n);
-    while(array[fin]<x && ini<=n){
-        ini = fin;
-        fin += sqrt(n);
-        if(fin>n){
-            fin = n;
-        }
-    }
+// int jump_search(int *array, int n, int x){
+//     int i=1, ini, fin;
+//     fin = sqrt(n);
+//     while(array[fin]<x && ini<=n){
+//         ini = fin;
+//         fin += sqrt(n);
+//         if(fin>n){
+//             fin = n;
+//         }
+//     }
 
-    i = ini;
-    while(i<=fin && array[i]!=x){
-        i++;
+//     i = ini;
+//     while(i<=fin && array[i]!=x){
+//         i++;
+//     }
+//     if(i>fin){
+//         return -1;
+//     }
+//     else{
+//         return i;
+//     }
+// }
+
+int minimum(int a, int b){
+    if(b>a)
+      return a;
+      else
+      return b;
+}
+int jump_search(int* arr, int n, int x){
+      // Finding block size to be jumped
+    int step = sqrt(n);
+ 
+    // Finding the block where element is
+    // present (if it is present)
+    int prev = 0;
+    while (arr[minimum(step, n)-1] < x)
+    {
+        prev = step;
+        step += sqrt(n);
+        if (prev >= n)
+            return -1;
     }
-    if(i>fin){
-        return -1;
+ 
+    // Doing a linear search for x in block
+    // beginning with prev.
+    while (arr[prev] < x)
+    {
+        prev++;
+ 
+        // If we reached next block or end of
+        // array, element is not present.
+        if (prev == minimum(step, n))
+            return -1;
     }
-    else{
-        return i;
-    }
+    // If element is found
+    if (arr[prev] == x)
+        return prev;
+ 
+    return -1;
 }
 
 void swap(int i, int j, int *arreglo){
