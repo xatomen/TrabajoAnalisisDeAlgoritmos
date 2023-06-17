@@ -156,8 +156,10 @@ int main(){
                 switch(opcion_menu_buscar){
                     case 1:
                         /*Ingresamos el valor a buscar*/
-                        cargar_listado_csv(array);
-                        int k = 121;
+                        length=8250000;
+                        /*Cargamos el listado en el array*/
+                        cargar_listado_en_arreglo(array,"ordenado.txt");
+                        int k = 199;
                         for(length=30000; length<=8250000; length+=30000){
                              /*Invocamos la función, guardando el retorno en la variable "valor"*/
                             tiempo_inicio = clock();
@@ -179,13 +181,29 @@ int main(){
 
                     case 2:
                         /*Ingresamos el valor a buscar*/
-                        int x;
-                        printf("Ingrese el valor a buscar:\n");
-                        scanf("%d",&x);
-                        /*Invocamos la función, guardando el retorno en la variable "valor"*/
-                        valor = jump_search(array,length,x);
-                        /*Imprimimos el índice que tiene el elemento en el array*/
-                        printf("Indice: %d\n",valor);
+                        length=8250000;
+                        /*Cargamos el listado en el array*/
+                        cargar_listado_en_arreglo(array,"ordenado.txt");
+                        int x = 199;
+                        for(length=30000; length<=8250000; length+=30000){
+                             /*Invocamos la función, guardando el retorno en la variable "valor"*/
+                            printf("length: %d",length);
+                            tiempo_inicio = clock();
+                            valor = jump_search(array,length,x);
+                            tiempo_final = clock();
+                            segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
+                            ingresar_tiempo_datalog("jumpsearch",segundos,anio,mes,dia,name,length);
+                            /*Imprimimos el índice que tiene el elemento en el array*/
+                            printf("Indice: %d\n",valor);
+                        }
+                        // /*Ingresamos el valor a buscar*/
+                        // int x;
+                        // printf("Ingrese el valor a buscar:\n");
+                        // scanf("%d",&x);
+                        // /*Invocamos la función, guardando el retorno en la variable "valor"*/
+                        // valor = jump_search(array,length,x);
+                        // /*Imprimimos el índice que tiene el elemento en el array*/
+                        // printf("Indice: %d\n",valor);
                     break;
 
                     case 3:
@@ -204,6 +222,8 @@ int main(){
                 switch(opcion_menu_ordenar){
                     case 1:
                         /*Invocamos la función y calculamos el tiempo de ejecución*/
+                        length=8250000;
+                        cargar_listado_csv(array);
                         tiempo_inicio = clock();
                         // quicksort(array,1,length);
                         quickSort(0,length,array); //REVISAR SI ES 0 O ES 1
@@ -401,7 +421,7 @@ void cargar_listado_en_arreglo(int *arreglo, char *name) {
     int i=1;
     FILE *archivo;
     /*Preparamos el archivo para leer*/
-    archivo = fopen(name,"r");
+    archivo = fopen("ordenado.txt","r");
 
     /*"buffer" contendrá el texto de cada línea del archivo*/
     char buffer[100];
