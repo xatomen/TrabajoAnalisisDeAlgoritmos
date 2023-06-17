@@ -136,7 +136,8 @@ int main(){
                 /*Obtenemos el largo*/
                 // length = get_length(name);
                 printf("Ingrese el tamaño del arreglo:\n");
-                scanf("%d",length);
+                scanf("%d",&length);
+                // length=8250000;
                 /*Cargamos el listado en el array*/
                 // cargar_listado_en_arreglo(array,name);
                 cargar_listado_csv(array);
@@ -250,6 +251,27 @@ int main(){
                         }
                         
             break;
+
+            case 7:
+            for(length=30000; length<=8250000; length+=30000){
+                            /*Cargamos el listado en el array*/
+                            printf("length: %d",length);
+                            cargar_listado_csv(array);
+                            printf("Operacion completada...\n");
+
+                            /*Invocamos la función y calculamos el tiempo de ejecución*/
+                            tiempo_inicio = clock();
+                            // quicksort(array,1,length);
+                            mergesort(array,1,length); //REVISAR SI ES 0 O ES 1
+                            tiempo_final = clock();
+                            segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
+                            ingresar_tiempo_datalog("mergesort",segundos,anio,mes,dia,name,length);
+                            printf("Operacion completada en %.20lf segundos...\n",segundos);
+                            /*Guardamos el arreglo en un archivo de texto*/
+                            // printf("Guardando arreglo en archivo de texto...");
+                            // guardar_arreglo(array,"mergesort.txt",length);
+                            printf("Operacion completada...\n");
+                        }
         }
     }
     return 0;
