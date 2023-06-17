@@ -155,13 +155,24 @@ int main(){
                 switch(opcion_menu_buscar){
                     case 1:
                         /*Ingresamos el valor a buscar*/
-                        int k;
-                        printf("Ingrese el valor a buscar:\n");
-                        scanf("%d",&k);
+                        int k = 121;
+                        for(length=30000; length<=8250000; length+=30000){
+                             /*Invocamos la función, guardando el retorno en la variable "valor"*/
+                            tiempo_inicio = clock();
+                            valor = busqueda_binaria(array,0,length,k);
+                            tiempo_final = clock();
+                            segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
+                            ingresar_tiempo_datalog("binaria",segundos,anio,mes,dia,name,length);
+                            /*Imprimimos el índice que tiene el elemento en el array*/
+                            printf("Indice: %d\n",valor);
+                        }
+                        // printf("Ingrese el valor a buscar:\n");
+                        // scanf("%d",&k);
+
                         /*Invocamos la función, guardando el retorno en la variable "valor"*/
-                        valor = busqueda_binaria(array,0,length,k);
+                        // valor = busqueda_binaria(array,0,length,k);
                         /*Imprimimos el índice que tiene el elemento en el array*/
-                        printf("Indice: %d\n",valor);
+                        // printf("Indice: %d\n",valor);
                     break;
 
                     case 2:
