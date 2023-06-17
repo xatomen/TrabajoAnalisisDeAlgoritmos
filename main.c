@@ -135,12 +135,12 @@ int main(){
                 // scanf("%49s", name);
                 /*Obtenemos el largo*/
                 // length = get_length(name);
-                printf("Ingrese el tamaño del arreglo:\n");
-                scanf("%d",&length);
-                // length=8250000;
+                // printf("Ingrese el tamaño del arreglo:\n");
+                // scanf("%d",&length);
+                length=8250000;
                 /*Cargamos el listado en el array*/
-                // cargar_listado_en_arreglo(array,name);
-                cargar_listado_csv(array);
+                cargar_listado_en_arreglo(array,"ordenado.txt");
+                // cargar_listado_csv(array);
                 printf("Operacion completada...\n");
             break;
 
