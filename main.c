@@ -39,7 +39,7 @@ void merge(int *arreglo, int l, int m, int r);
 void mergesort(int *arreglo, int l, int r);
 
 void guardar_arreglo(int *arreglo, char *name_sort, int length);
-void ingresar_tiempo_datalog(char *operacion, double tiempo, int anio, int mes, int dia, int *name);
+void ingresar_tiempo_datalog(char *operacion, double tiempo, int anio, int mes, int dia, char *name, int length);
 
 /*Programa principal*/
 int main(){
@@ -196,7 +196,7 @@ int main(){
                         quickSort(0,length,array); //REVISAR SI ES 0 O ES 1
                         tiempo_final = clock();
                         segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
-                        ingresar_tiempo_datalog("quicksort",segundos,anio,mes,dia,name);
+                        // ingresar_tiempo_datalog("quicksort",segundos,anio,mes,dia,name);
                         printf("Operacion completada en %.20lf segundos...\n",segundos);
                         /*Guardamos el arreglo en un archivo de texto*/
                         printf("Guardando arreglo en archivo de texto...");
@@ -210,7 +210,7 @@ int main(){
                         mergesort(array,1,length);
                         tiempo_final = clock();
                         segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
-                        ingresar_tiempo_datalog("mergesort",segundos,anio,mes,dia,name);
+                        // ingresar_tiempo_datalog("mergesort",segundos,anio,mes,dia,name);
                         printf("Operacion completada en %.20lf segundos...\n",segundos);
                         /*Guardamos el arreglo en un archivo de texto*/
                         // guardar_arreglo(array,"mergesort.txt",8926307);
@@ -226,6 +226,29 @@ int main(){
 
             case 5:
                 free(array);
+            break;
+
+            case 6:
+                        for(length=30000; length<=8250000; length+=30000){
+                            /*Cargamos el listado en el array*/
+                            printf("length: %d",length);
+                            cargar_listado_csv(array);
+                            printf("Operacion completada...\n");
+
+                            /*Invocamos la función y calculamos el tiempo de ejecución*/
+                            tiempo_inicio = clock();
+                            // quicksort(array,1,length);
+                            quickSort(0,length,array); //REVISAR SI ES 0 O ES 1
+                            tiempo_final = clock();
+                            segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
+                            ingresar_tiempo_datalog("quicksort",segundos,anio,mes,dia,name,length);
+                            printf("Operacion completada en %.20lf segundos...\n",segundos);
+                            /*Guardamos el arreglo en un archivo de texto*/
+                            printf("Guardando arreglo en archivo de texto...");
+                            guardar_arreglo(array,"quicksort.txt",length);
+                            printf("Operacion completada...\n");
+                        }
+                        
             break;
         }
     }
@@ -565,10 +588,10 @@ void guardar_arreglo(int *arreglo, char *name_sort,int length){
     fclose(archivo);
 }
 
-void ingresar_tiempo_datalog(char *operacion, double tiempo, int anio, int mes, int dia, int *name){
+void ingresar_tiempo_datalog(char *operacion, double tiempo, int anio, int mes, int dia, char *name, int length){
     FILE *archivo;
     archivo = fopen("datalog.txt","a");
-    fprintf(archivo,"operacion: %s fecha: %02d-%02d-%d tiempo:%0.20lf nombre archivo: %s\n",operacion,dia,mes,anio,tiempo,name);
+    fprintf(archivo,"operacion: %s fecha: %02d-%02d-%d tiempo:%0.20lf length: %d\n",operacion,dia,mes,anio,tiempo,length);
     fclose(archivo);
 }
 
