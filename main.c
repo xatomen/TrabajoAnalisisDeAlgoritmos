@@ -204,7 +204,8 @@ int main(){
                         /*Ingresamos el valor a buscar*/
                         length=30000000;
                         /*Cargamos el listado en el array*/
-                        cargar_listado_en_arreglo(array,"ordenado.txt");
+                        // cargar_listado_en_arreglo(array,"ordenado.txt");
+                        cargar_listado_en_arreglo(array,"listado_asc_length_32000000_min_0.txt");
                         int x = 20000000;
                         for(length=30000; length<=30000000; length+=30000){
                         //      /*Invocamos la función, guardando el retorno en la variable "valor"*/
@@ -247,8 +248,7 @@ int main(){
                         length=8250000;
                         cargar_listado_csv(array);
                         tiempo_inicio = clock();
-                        // quicksort(array,1,length);
-                        quickSort(0,length,array); //REVISAR SI ES 0 O ES 1
+                        quickSort(0,length,array);
                         tiempo_final = clock();
                         segundos = (double)(tiempo_final-tiempo_inicio)/CLOCKS_PER_SEC;
                         // ingresar_tiempo_datalog("quicksort",segundos,anio,mes,dia,name);
@@ -584,42 +584,36 @@ void swap(int i, int j, int *arreglo){
     arreglo[j] = aux;
 }
 
-int partition(int left, int right, int pivot, int *numbers) {
+int partition(int left, int right, int pivot, int *arreglo) {
    int leftPointer = left -1;
    int rightPointer = right;
 
    while (1) {
-      while (numbers[++leftPointer] < pivot) {
-         //do nothing
+      while (arreglo[++leftPointer] < pivot) {
       }
 
-      while (rightPointer > 0 && numbers[--rightPointer] > pivot) {
-         //do nothing
+      while (rightPointer > 0 && arreglo[--rightPointer] > pivot) {
       }
 
       if (leftPointer >= rightPointer) {
          break;
       } else {
-         // printf(" item swapped :%d,%d\n", numbers[leftPointer],numbers[rightPointer]);
-         swap(leftPointer,rightPointer, numbers);
+         swap(leftPointer,rightPointer, arreglo);
       }
    }
 
-   // printf(" pivot swapped :%d,%d\n", numbers[leftPointer],numbers[right]);
-   swap(leftPointer, right, numbers);
-   // printf("Updated Array: ");
-   // display();
+   swap(leftPointer, right, arreglo);
    return leftPointer;
 }
 
-void quickSort(int left, int right, int *numbers) {
+void quickSort(int left, int right, int *arreglo) {
    if(right - left <= 0) {
       return;
    } else {
-      int pivot = numbers[right];
-      int partitionPoint = partition(left, right, pivot, numbers);
-      quickSort(left, partitionPoint-1, numbers);
-      quickSort(partitionPoint+1, right, numbers);
+      int pivot = arreglo[right];
+      int partitionPoint = partition(left, right, pivot, arreglo);
+      quickSort(left, partitionPoint-1, arreglo);
+      quickSort(partitionPoint+1, right, arreglo);
    }
 }
 
@@ -710,7 +704,7 @@ void ingresar_tiempo_datalog(char *operacion, double tiempo, int anio, int mes, 
     fclose(archivo);
 }
 
-/*TERMINAR FUNCION!!!!!!!!*/
+/*TCAMBIAR ROW POR 1**************/
 void cargar_listado_csv(int *arreglo){
     FILE* archivo;
     archivo = fopen("AtencionesUrgencia2022.csv","r");
