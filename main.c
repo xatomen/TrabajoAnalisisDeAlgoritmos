@@ -179,7 +179,7 @@ int main(){
                         /*Cargamos el listado en el array*/
                         // cargar_listado_en_arreglo(array,"ordenado.txt");
                         cargar_listado_en_arreglo(array,"listado_asc_length_32000000_min_0.txt");
-                        int k = 20000000;
+                        int k = 25000;
                         for(length=30000; length<=30000000; length+=30000){
                             clock_gettime(CLOCK_MONOTONIC, &t_inicio);
                             valor = busqueda_binaria(array, 0, length, k);
@@ -206,7 +206,7 @@ int main(){
                         /*Cargamos el listado en el array*/
                         // cargar_listado_en_arreglo(array,"ordenado.txt");
                         cargar_listado_en_arreglo(array,"listado_asc_length_32000000_min_0.txt");
-                        int x = 20000000;
+                        int x = 25000;
                         for(length=30000; length<=30000000; length+=30000){
                         //      /*Invocamos la función, guardando el retorno en la variable "valor"*/
                             printf("length: %d",length);
